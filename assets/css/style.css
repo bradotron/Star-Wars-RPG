@@ -1,0 +1,42 @@
+body {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-template-rows: auto auto auto auto;
+
+  justify-content: center;
+  align-content: center;
+}
+
+.character {
+  border: solid 4px grey;
+}
+
+#goodGuys {
+  background-color: green;
+
+  margin: 10px;
+}
+
+#badGuys {
+  background-color: red;
+
+  margin: 10px;
+}
+
+#attacker {
+  background-color: blue;
+
+  margin: 10px;
+}
+
+#defender {
+  background-color: pink;
+
+  margin: 10px;
+}
