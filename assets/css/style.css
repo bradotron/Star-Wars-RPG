@@ -5,41 +5,79 @@ body {
 
   justify-content: center;
   align-content: center;
+
+  background-image: url("../images/Death-Star-Backgrounds.jpg");
+
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  grid-template-rows: auto auto auto auto;
+.game-container {
+  background-color: rgba(100, 100, 100, 0.5);
+  min-width: 50vw;
+  text-align: center;
 
+}
+
+#instructions {
+  margin: 10px;
+  line-height: 2rem;
+  font-size: 1.5rem;
+}
+
+#messages {
+  margin: 10px;
+  line-height: 1.5rem;
+  font-size: 1rem;
+}
+
+.grid-center {
+  display: grid;
   justify-content: center;
   align-content: center;
 }
 
+.grid-1-row {
+  grid-template-rows: auto;
+}
+
 .character {
-  border: solid 4px grey;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto;
+  margin: 2px;
+  padding: 5px;
 }
 
-#goodGuys {
+.row-1 {
+  grid-row: 1;
+}
+
+.stats-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.bg-green {
   background-color: green;
-
-  margin: 10px;
 }
 
-#badGuys {
-  background-color: red;
-
-  margin: 10px;
-}
-
-#attacker {
+.bg-blue {
   background-color: blue;
-
-  margin: 10px;
 }
 
-#defender {
-  background-color: pink;
+.bg-red {
+  background-color: red;
+}
 
-  margin: 10px;
+.bg-white {
+  background-color: white;
+}
+
+.color-white {
+  color: white;
+}
+
+.text-center {
+  text-align: center;
 }

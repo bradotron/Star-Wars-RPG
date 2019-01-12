@@ -8,18 +8,19 @@
 //    Attack Power
 //    Counter Attack Power
 // a constructor for a 'Character' that has a name and three attributes
-function Character(name, hp, ap, cap) {
+function Character(name, hp, ap, cap, img) {
   this.name = name;
   this.healthPoints = hp;
   this.baseAttackPower = ap;
   this.currentAttackPower = ap;
   this.counterAttackPower = cap;
+  this.imgSrc = img;
 }
 // create an array of characters for easy manipulating later
-var characters = [ new Character("Luke Skywalker", 120, 8, 20), 
-                   new Character("Han Solo", 140, 10, 20), 
-                   new Character("Darth Vadar", 110, 8, 10), 
-                   new Character("Emperor Palpatine", 180, 6, 30)];
+var characters = [ new Character("Luke Skywalker", 120, 10, 20, "assets/images/luke_skywalker_125x125.jpg"), 
+                   new Character("Han Solo", 140, 8, 15, "assets/images/han_solo_125x125.jpg"), 
+                   new Character("Darth Vadar", 110, 12, 10, "assets/images/darth_vader_125x125.jpg"), 
+                   new Character("Emperor Palpatine", 180, 6, 25, "assets/images/palpatine_125x125.jpg")];
 
 // this line is a shortcut way to get the same effect as a document.ready
 $(function() {
@@ -29,10 +30,11 @@ $(function() {
   var badGuysDisplay = $("#badGuys");
   var phase = 0;
 
+  // reset the game to start
   startPhase1();
 
-  $(".character").on("click", function(event) {
-    //console.log("phase " + phase);
+  function clickedCharacter(e) {
+    //console.log("clicked and phase " + phase);
     //console.log(event); // the event is the click
     //console.log(this); // 'this' is the element that was clicked; in this case it is the character
 
@@ -42,17 +44,21 @@ $(function() {
       // the remaining characters will all be sent to the badGuys display area (and give them a red border for fun)
 
       // move 'this' element into the attackerDisplay
+      //console.log(this);
+      $(this).addClass("bg-green");
       attackerDisplay.append(this);
 
-      badGuysDisplay.append(goodGuysDisplay.children());
 
+      badGuysDisplay.append(goodGuysDisplay.children());
+      for(var i=0; i<badGuysDisplay.children().length; i++) {
+        //console.log(badGuysDisplay.children()[i]);
+        $(badGuysDisplay.children()[i]).addClass("bg-red");
+      }
       startPhase2();
     } else if (phase === 2) {
       // the player needs to select the bad guy to attack
       //console.log("#"+this.id);
       var myParentId = $("#" + this.id).parents()[0].id; //
-      //console.log( myParentId );
-      //console.log( $("#"+this.id).parents() );
 
       if (myParentId === "badGuys") {
         // the player clicked a bad Guy
@@ -92,7 +98,8 @@ $(function() {
     } else {
       console.log("unknown phase");
     }
-  });
+  }
+
 
   $("#attack-button").click(function(e) {
     e.preventDefault();
@@ -106,17 +113,19 @@ $(function() {
 
       // the attacker hits the defender, the attackers attack power increases by its base attack power
       $(defender).attr("healthPoints", parseInt( $(defender).attr("healthPoints") ) - parseInt( $(attacker).attr("currentAttackPower") ) );
+      $("#messages").html( $(attacker).attr("name") + " hits " + $(defender).attr("name") + " for " + $(attacker).attr("currentAttackPower") + " damage!");
 
       // if the defenders hp is 0, then the defender is dead
       if( parseInt( $(defender).attr("healthPoints") ) <= 0 ) {
         // defender is dead
-        console.log("defender is dead");
+        // console.log("defender is dead");
         // then empty the defenderDisplay to delete this defender
         defenderDisplay.empty();
         if( badGuysDisplay.children().length == 0 ) {
           userWin();
         }
         else {
+          $("#messages").html( $("#messages").html() + "<br>" + $(defender).attr("name") + " is defeated!");
           // start phase 2 again - user needs to select a new enemy
           startPhase2();
         }
@@ -126,14 +135,20 @@ $(function() {
         $(attacker).attr("currentAttackPower", parseInt( $(attacker).attr("currentAttackPower") ) + parseInt($(attacker).attr("baseAttackPower") ) );
         // the attackers health goes down by the defenders counter attack power;
         $(attacker).attr("healthPoints", parseInt( $(attacker).attr("healthPoints") ) - parseInt( $(defender).attr("counterAttackPower") ) );
+        $("#messages").html( $("#messages").html() + "<br>" + $(defender).attr("name") + " counters " + $(attacker).attr("name") + " for " + $(defender).attr("counterAttackPower") + " damage!");
+
 
         if( parseInt( $(attacker).attr("healthPoints") ) <= 0 ) {
           // attacker dies, game over
+          updateMe(attacker);
+          updateMe(defender);
           gameOver();
         }
         else {
           // prompt user to carry on with attacking
           // update the displays? make a cool lightsaber noise?
+          updateMe(attacker);
+          updateMe(defender);
         }
       }
     } else {
@@ -148,6 +163,15 @@ $(function() {
     // user pressed the reset button
     startPhase1();
   });
+
+  function updateMe(update) {
+    // this function will update the stats on a character card
+    // console.log($($(update).children()[1]).children());
+    // update attack
+    $($($(update).children()[1]).children()[0]).html("Atk<br>" + $(update).attr("currentAttackPower"));
+    // update health
+    $($($(update).children()[1]).children()[1]).html("HP<br>" + $(update).attr("healthPoints"));
+  }
 
   function startPhase1() {
     // reset button is hidden
@@ -165,18 +189,48 @@ $(function() {
     // this is phase 1
     phase = 1;
     for (var i = 0; i < characters.length; i++) {
-      var newDiv = $("<div>");
-      newDiv.attr("id", "character-" + i);
-      newDiv.attr("class", "character");
-      newDiv.attr("name", characters[i].name);
-      newDiv.attr("baseAttackPower", characters[i].baseAttackPower);
-      newDiv.attr("currentAttackPower", characters[i].currentAttackPower);
-      newDiv.attr("healthPoints", characters[i].healthPoints);
-      newDiv.attr("counterAttackPower", characters[i].counterAttackPower);
-      newDiv.text(characters[i].name);
-
-      goodGuysDisplay.append(newDiv);
+      goodGuysDisplay.append(buildCharacterCard(characters[i], i));
     }
+    //add the click listener to the characters
+    $(".character").on("click", clickedCharacter);
+
+    // tell the user to select a character
+    $("#instructions").text("Select a character to begin...");
+
+    // clear the messages
+    $("#messages").html("");
+  }
+
+  function buildCharacterCard(buildThis, i) {
+    // this is where I build the character
+    // character is an image and a stats bar
+    // 1 column, 2 row grid
+
+    // create a new div that will be the return object
+    var newDiv = $("<div>");
+    newDiv.addClass("character row-1");
+    newDiv.attr("id", "character-" + i);
+
+    // give the div the character stats as attributes
+    newDiv.attr("name", buildThis.name);
+    newDiv.attr("baseAttackPower", buildThis.baseAttackPower);
+    newDiv.attr("currentAttackPower", buildThis.currentAttackPower);
+    newDiv.attr("healthPoints", buildThis.healthPoints);
+    newDiv.attr("counterAttackPower", buildThis.counterAttackPower);
+
+    // create the image and append it to the new div
+    newDiv.append($("<img>").attr("src", buildThis.imgSrc));
+
+    // create the stats display 
+    var newStats = $("<div>").addClass("stats-bar");
+    newStats.append($("<div>").html("Atk<br>"+buildThis.currentAttackPower).addClass("bg-green color-white text-center"));
+    newStats.append($("<div>").html("HP<br>"+buildThis.healthPoints).addClass("bg-blue color-white text-center"));
+    newStats.append($("<div>").html("Ctr<br>"+buildThis.counterAttackPower).addClass("bg-red color-white text-center"));
+
+    // append the stats to the newdiv
+    newDiv.append(newStats);
+
+    return newDiv;
   }
 
   function startPhase2() {
@@ -184,6 +238,8 @@ $(function() {
     phase = 2;
     // attack button is hidden in phase 2
     $("#attack-button").hide();
+
+    $("#instructions").text("Select an opponent!");
   }
 
   function startPhase3() {
@@ -191,20 +247,26 @@ $(function() {
     phase = 3;
     // enable the attack button
     $("#attack-button").show();
+    $("#instructions").text("Press attack!");
+    $("#messages").html("");
   }
 
   function userWin() {
     // player winds, no more bad guys
     console.log("you win");
     phase = 0;
+    $("#instructions").text("You are victorious! Press Reset to play again...")
+    $("#messages").html("Well Played!");
     $("#attack-button").hide();
     $("#reset-button").show();
   }
 
   function gameOver() {
     // player loses, game over
-    console.log("Game Ove");
+    //console.log("Game Over");
     phase = 0;
+    $("#instructions").text("You have been defeated! Press Reset to try again...");
+    $("#messages").html("Choose your character and opponents wisely!");
     $("#attack-button").hide();
     $("#reset-button").show();
   }
