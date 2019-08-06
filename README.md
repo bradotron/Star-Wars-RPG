@@ -1,11 +1,11 @@
-# unit-4-game
-# this repository is a rudimentory RPG game created by Bradley Jensen
+# Star Wars RPG
 
-# How to play:
+[Github](https://github.com/bradotron/Star-Wars-RPG)
+[Deployed App](https://bradotron.github.io/Star-Wars-RPG/)
 
+# Using the App
 ## Step One: 
 The game presents the player with a board of four characters to choose from. The player clicks on their desired character to begin the game.
-
 
 ## Step Two: 
 Once the player has chosen a character, the player must then click on an opponent (indicated by red outline).
@@ -23,4 +23,27 @@ Health Points is the amount of life a character has. Each attack or counter atta
 ### Counter Attack Power (Ctr):
 When the player attacks an opponent, the opponent will attack the character for this amount (if the opponent survives the players attack).
 
-That's pretty much it! Give it a try...
+# File Structure
+```
+|-- ProjectRoot
+    |-- index.html
+    |-- README.md
+    |-- assets
+    |   |-- css
+    |   |   |-- reset.css
+    |   |   |-- style.css
+    |   |-- images
+    |   |   |-- darth_vader_125x125.jpg
+    |   |   |-- Death-Star-Backgrounds.jpg
+    |   |   |-- han_solo_125x125.jpg
+    |   |   |-- luke_skywalker_125x125.jpg
+    |   |   |-- palpatine_125x125.jpg
+    |   |-- javascript
+    |       |-- game.js
+    |-- Instructions
+        |-- homework_instructions.md
+        |-- Images
+            |-- 1-CrystalCollector.jpg
+            |-- 2-StarWars.jpg
+
+```
